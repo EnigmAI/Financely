@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+{% load static %}
+{% load poll_extras %}
+<html lang="en" dir="ltr">
+
+<head>
+
+  <meta charset="utf-8">
+  <title>{{page_title}}</title>
+  <link rel="shortcut icon" type="image/ico" href="{% static 'images/favicon.ico' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+var user = '{{request.user}}'
+
+  function getToken(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getToken('csrftoken')
+
+</script>
+</head>
+<style>
+  body {
+    background-color:#f8f9fa;
+  }
+
+/* ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+}
+
+li {
+  float: left;
+} */
+
+li a, .dropbtn {
+  /* display: inline-block; */
+  color: white;
+
+  /* padding: 14px 16px; */
+  text-decoration: none;
+}
+.results-box{
+  padding: 20px;
+  text-align: center;
+}
+/* li a:hover, .dropdown:hover{
+  background-color: red;
+} */
+
+li, .dropdown-self {
+  display: inline-block;
+}
+
+.options {
+  display: block;
+
+  position: absolute;
+  background-color: #f9f9f9;
+  width: 12.7em;
+  border-radius: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+body
+{
+    counter-reset: Serial;           /* Set the Serial counter to 0 */
+}
+
+table
+{
+    border-collapse: separate;
+}
+
+tr td:first-child:before
+{
+  counter-increment: Serial;      /* Increment the Serial counter */
+  content:  counter(Serial); /* Display the counter */
+}
+/*
+.options a,p {
+  color: black;
+  display: block;
+  text-align: left;
+} */
+
+/* .dropdown-content a:hover {background-color: #f1f1f1;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+} */
+</style>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'basic_app:index' %}">Financely</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% if request.user|has_group:"Client" %}
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'basic_app:portfolio' %}">Portfolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'basic_app:profile' %}">Profile</a>
+          </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">User Stats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Portfolio Stats</a>
+          </li>
+        </ul>
+
+        {% endif %}
+
+
+<li>
+          <form class="d-flex">
+          <input class="form-control me-2" id = "search-input" type="search" placeholder="Search" aria-label="Search" class="nav-link dropdown-toggle">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+
+
+          <div id="results-box" class="options d-none ">
+
+          </div>
+
+
+
+</li>
+
+      <!-- <div class="row">
+        <div class="col">
+          <ul class="navbar-nav" >
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Hi {{request.user}}</a>
+                <ul class="dropdown-menu justify-content-end" aria-labelledby="navbarDropdownMenuLink">
+
+                  <li><a class="dropdown-item" href="#">Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'basic_app:logout' %}">Logout</a></li>
+
+                </ul>
+              </li>
+
+
+          </ul>
+
+        </div>
+
+      </div> -->
+
+
+
+
+    <ul class="navbar-nav" >
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Hi {{request.user}}</a>
+          <ul class="dropdown-menu justify-content-end" aria-labelledby="navbarDropdownMenuLink">
+
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'basic_app:logout' %}">Logout</a></li>
+
+          </ul>
+        </li>
+        &emsp;
+
+    </ul>
+
+
+
+
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <br>
+    <br>
+    {% block content %}
+
+    {% endblock %}
+  </div>
+
+</body>
+<script>
+console.log('hello world')
+const search_key = document.getElementById("search-input")
+const result_box = document.getElementById("results-box")
+const sendSearchData = (searchData) =>
+{
+  $.ajax({
+    type: 'POST',
+    url: '',
+    data: {
+      'searchData': searchData,
+      'csrfmiddlewaretoken': '{{csrf_token}}'
+    },
+    success: (res)=>{
+      console.log(res.data)
+      const data = res.data
+
+      if(Array.isArray(data))
+      {
+        result_box.innerHTML=""
+        for(var i=0;i<data.length;i++)
+        {
+          var symbol = data[i].symbol
+          console.log(symbol)
+          result_box.innerHTML += `<center><a class="text-dark" href="${symbol}">${data[i].name}<p class="text-muted justify-content-center">( ${data[i].exchDisp})</p></a></center>`
+
+        }
+
+      }
+      else{
+        if(search_key.value.length > 0){
+          result_box.innerHTML = '<p>'+ data+ '</p>'
+
+        }
+        else
+        {
+          console.log("hi")
+          result_box.classList.add('d-none')
+
+
+        }
+
+      }
+    },
+    error: (err)=>{
+      console.log(err)
+    }
+  })
+}
+
+search_key.addEventListener('keyup', e=>{
+  if(result_box.classList.contains('d-none'))
+  {
+    result_box.classList.remove('d-none')
+
+  }
+
+  if(e.target.value.length > 0)
+  sendSearchData(e.target.value)
+
+  else{
+    result_box.classList.add('d-none')
+  }
+
+})
+
+</script>
+
+
+
+</html>
