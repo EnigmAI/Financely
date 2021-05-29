@@ -47,4 +47,10 @@ http://localhost:8000
 
 # Preview
 
-![](assets/preview.gif)
+Video link - https://drive.google.com/file/d/1ehs1m1HP4O2smAXmWmnmH4Y-k36jBmf0/view?usp=sharing
+
+| ![](assets/1.png) | ![](assets/2.png) |
+|:------------------|:------------------|
+| ![](assets/3.png) | ![](assets/4.png) |
+|:------------------|:------------------|
+| ![](assets/5.png) | ![](assets/6.png) |
