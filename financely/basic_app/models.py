@@ -18,6 +18,8 @@ class Stock(models.Model):
     id = models.BigAutoField(primary_key=True)
     parent_portfolio = models.ForeignKey(Portfolio,related_name="stocks",on_delete=models.CASCADE,null=True,blank=True)
     stock_symbol = models.CharField(max_length=100,null=True)
+    stock_price = models.CharField(max_length=100,null=True,blank=True)
+    stock_sector_performance = models.CharField(max_length=100,null=True,blank=True)
     stock_name  = models.CharField(max_length=100,null=True)
     quantity = models.IntegerField(default=0,null=True,blank=True)
     date_added = models.DateTimeField(auto_now_add=True)

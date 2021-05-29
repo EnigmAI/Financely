@@ -12,14 +12,23 @@
       <div class="col">
         <center>
           <h1 style="display: inline-block;">{{info.shortName}}</h1>
+          {% if recommendation %}
+          <p style="color:green">We recommend buying this stock</p>
+
+          {% else %}
+          <p style="color:red">We do not recommend buying this stock</p>
+          {% endif %}
+
           <center>
       </div>
 
-        <div class="col-2">
-          <input type="button" data-symbol={{info.symbol}} data-name={{info.shortName}} data-action="add" class="btn btn-primary update-portfolio" style="display:inline-block" value="Add to Portfolio">
+    <div class="col-4">
+      <a href="{{info.symbol}}/add" class = "btn btn-primary">Add to Portfolio</a>
+      <!-- <input type="button" data-symbol={{info.symbol}} data-name={{info.shortName}} data-action="add" class="btn btn-primary update-portfolio" style="display:inline-block" value="Add to Portfolio"> -->
+      <a href="{% url 'basic_app:prediction' info.symbol %}" class="btn btn-success">See Price Prediction</a>
 
-        </div>
 
+    </div>
 
 
 
@@ -38,14 +47,37 @@
       </div>
     </div>
   </div>
+
 <br>
-<br>
-  <div class="row p-10">
-    <div class="col-5 p-10">
+  <div class="row">
+    <div class="col">
       <div class="card card-body">
         <center>
           <h2>Technical Analysis</h2>
         </center>
+          <div class="row">
+            <label>Add an indicator:</label>
+            <div class="col-8 mx-auto">
+
+
+              <select class="form-select indicators" id="indicator">
+                <option value="NONE" selected>None</option>
+                <option value="BB">BB</option>
+                <option value="Pivots">Pivots</option>
+                <option value="EMA">EMA</option>
+                <option value="SMA">SMA</option>
+                <option value="MACD">MACD</option>
+                <option value="RSI">RSI</option>
+                <option value="OBV">OBV</option>
+
+              </select>
+
+            </div>
+            <div class=" d-grid col-4">
+                <input id="resetButton" class="btn btn-primary btn-sm" type="button" name="" value="Reset">
+            </div>
+
+          </div>
 
 
         <div class="col-5">
@@ -57,8 +89,54 @@
 
     </div>
 
+    <div class="col">
+      <div class="row">
+        <div class="card card-body">
+          <center>
+            <h2>Financial Analysis</h2>
+          </center>
+            <h3>Piotroski Score</h3>
+            <p>The Piotroski Score is a discrete score between zero and nine that reflects nine criteria used to determine the strength of a firm's financial position. The Piotroski Score is used to determine the best value stocks, with nine being the best and zero being the worst.</p>
+            <a href="https://www.investopedia.com/terms/p/piotroski-score.asp">More about the Piotroski Score</a>
+              <br>
+            <h5>The score for this stock is: {{piotroski_score}}</h5>
+
+            <div class="progress">
+              <div id ="piotroski-bar" class="progress-bar" role="progressbar" style="width:0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+
+        </div>
+        <br>
+        <div class="row">
+        <div class="card card-body">
+          <center>
+            <h2>News Sentiment</h2>
+          </center>
+            <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
+            <canvas id="densityChart" width="400" height="130"></canvas>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+    </div>
 
   </div>
+
+
+
+
+
+
+
+
+
 
 <script type='text/javascript' src="{% static 'js/stock.js' %}"></script>
 
@@ -66,8 +144,49 @@
 
     var passed_data = {{data | safe}}
     var info = {{item | safe}}
+    var $resetBtn = $('#resetButton');
+    var score = {{piotroski_score | safe}}
+    var percentage = Math.floor((score/9)*100);
 
-    // set the chart type
+    var element = document.getElementById("piotroski-bar");
+    // for(var i = 0;i<=percentage;i++)
+    // {
+    //     element.style.width = percentage+"%";
+    //
+    // }
+    var i = 0;                  //  set your counter to 1
+
+    function myLoop() {         //  create a loop function
+      setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+        i++;                    //  increment the counter
+        if (i <= percentage) {
+          element.style.width = i+"%";
+          if(i<33)
+            element.classList.add("bg-danger");
+          else if(i>33 && i<66)
+          {
+            element.classList.remove("bg-danger");
+            element.classList.add("bg-warning");
+          }
+
+          else
+          {
+            element.classList.remove("bg-warning");
+            element.classList.add("bg-success");
+          }
+
+          //  if the counter < 10, call the loop function
+          myLoop();             //  ..  again which will trigger another
+        }
+        if(i>percentage)
+        return;                    //  ..  setTimeout()
+      }, 20)
+    }
+
+    myLoop();                   //  start the loop
+
+
+    // load data
     var dataTable = anychart.data.table("Date");
     // create a data table
     dataTable.addData(passed_data);
@@ -99,8 +218,258 @@
 
 
 
+    $resetBtn.on('click', function(e) {
+      e.preventDefault();
 
-      </script>
+
+      chart.dispose();
+      chart = null;
+      element = document.getElementById("indicator");
+      element.value = "NONE";
+      // reset saved settings
+      var dataTable = anychart.data.table("Date");
+      // create a data table
+      dataTable.addData(passed_data);
+
+      // map the data
+      var mapping = dataTable.mapAs({
+        open: "Open",
+        high: "High",
+        low: "Low",
+        close: "Close"
+      });
+
+      // create a stock chart
+
+
+      // set the chart type
+      chart = anychart.stock();
+      // set the series
+      var series = chart.plot(0).candlestick(mapping);
+      series.name(info[0]["name"] + " Trade Data");
+
+      // set the chart title
+      chart.title(info[0]["name"] + " Trade Data");
+      // set the container id
+      chart.container('chart-box');
+
+      // draw the chart
+      chart.draw();
+
+    });
+
+    $(document).ready(function() {
+      $("select.indicators").change(function() {
+        var selectedCountry = $(this).children("option:selected").val();
+        var plot = chart.plot(0);
+        if (selectedCountry == "BB") {
+          var bbands = plot.bbands(mapping);
+          bbands.upperSeries().stroke('#bf360c');
+          bbands.middleSeries().stroke('#ff6600');
+          bbands.lowerSeries().stroke('#bf360c');
+          bbands.rangeSeries().fill('#ffd54f 0.2');
+        } else if (selectedCountry == "RSI") {
+          var plot_1 = chart.plot(1);
+
+          // create RSI indicator with period 14
+          var rsi14 = plot_1.rsi(mapping, 14);
+          console.log("RSI is being called")
+        } else if (selectedCountry == "EMA") {
+          var ema20 = plot.ema(mapping, 20).series();
+          ema20.stroke('#bf360c');
+        } else if (selectedCountry == "SMA") {
+          var sma20 = plot.sma(mapping, 20).series();
+          sma20.stroke('#bf360c');
+        } else if (selectedCountry == "MACD") {
+          var plot_1 = chart.plot(1);
+          // create MACD indicator with fast period 12, slow period 26 and signal period 9
+          var macd = plot_1.macd(mapping, 12, 26, 9);
+          // MACD consists of three series, MACD and signal are lines by default, histogram is a column
+          macd.macdSeries().stroke('#bf360c');
+          macd.signalSeries().stroke('#ff6d00');
+          macd.histogramSeries().fill('#ffe082');
+
+        }
+        else if(selectedCountry == "Pivots")
+        {
+          var computer = dataTable.createComputer(mapping);
+  // set computer output field
+  computer.addOutputField('pp', 'pivot');
+  computer.addOutputField('sup1', 'support1');
+  computer.addOutputField('sup2', 'support2');
+  computer.addOutputField('sup3', 'support3');
+  computer.addOutputField('res1', 'resistance1');
+  computer.addOutputField('res2', 'resistance2');
+  computer.addOutputField('res3', 'resistance3');
+
+  // initiate variables
+  var maxArr = [];
+  var minArr = [];
+  var max = 0;
+  var min = 0;
+  var closeValue = 0;
+  var pp = null;
+  var support1 = null;
+  var support2 = null;
+  var support3 = null;
+  var resistance1 = null;
+  var resistance2 = null;
+  var resistance3 = null;
+  var counter = 0;
+
+  computer.setStartFunction(function() {
+    closeValue = 0;
+    pp = null;
+    support1 = null;
+    support2 = null;
+    support3 = null;
+    resistance1 = null;
+    resistance2 = null;
+    resistance3 = null;
+    counter = 0;
+    //reset min and max arrays
+    maxArr = [];
+    minArr = [];
+  });
+
+  // set calculation function to produce custom indicator math
+  computer.setCalculationFunction(function (row) {
+    //collect high and low during the period
+    maxArr.push(row.get('high'));
+    minArr.push(row.get('low'));
+    //if the end of the period (period = 30 candlesticks here)
+    if (counter > 29) {
+      //get close value
+      closeValue = row.get('close');
+      //get highest high and lowest low
+      max = Math.max.apply(null, maxArr);
+      min = Math.min.apply(null, minArr);
+      //calculate pivot point
+      pp = (max + min + closeValue) / 3;
+      //calculate support1
+      support1 = pp * 2 - max;
+      //calculate resistance1
+      resistance1 = pp * 2 - min;
+      //calculate support2
+      support2 = pp - (max - min);
+      //calculate resistance2
+      resistance2 = pp + (max - min);
+      //calculate support3
+      support3 = min - 2 * (max - pp);
+      //calculate resistance3
+      resistance3 = max + 2 * (pp - min);
+      //reset candlesticks counter
+      counter = 0;
+      //reset min and max arrays
+      maxArr = [];
+      minArr = [];
+    }
+    //set calculated data
+    row.set('pp', pp);
+    row.set('sup1', support1);
+    row.set('sup2', support2);
+    row.set('sup3', support3);
+    row.set('res1', resistance1);
+    row.set('res2', resistance2);
+    row.set('res3', resistance3);
+    counter++;
+  });
+
+  // map computed column as value
+  var pivotMapping = dataTable.mapAs({'value': 'pivot'});
+  var support1Mapping = dataTable.mapAs({'value': 'support1'});
+  var support2Mapping = dataTable.mapAs({'value': 'support2'});
+  var support3Mapping = dataTable.mapAs({'value': 'support3'});
+  var resistance1Mapping = dataTable.mapAs({'value': 'resistance1'});
+  var resistance2Mapping = dataTable.mapAs({'value': 'resistance2'});
+  var resistance3Mapping = dataTable.mapAs({'value': 'resistance3'});
+
+  // create line series with mapping
+  var pivotLine = plot.line(pivotMapping);
+  pivotLine.name('Pivot');
+  pivotLine.stroke('#ffaaff 1');
+
+  var support1Line = plot.line(support1Mapping);
+  support1Line.name('Support1');
+  support1Line.stroke('#ffa000 1');
+
+  var support2Line = plot.line(support2Mapping);
+  support2Line.name('Support2');
+  support2Line.stroke('#DF8577 1');
+
+  var support3Line = plot.line(support3Mapping);
+  support3Line.name('Support3');
+  support3Line.stroke('#B75774 1');
+
+  var resistance1Line = plot.line(resistance1Mapping);
+  resistance1Line.name('Resistance1');
+  resistance1Line.stroke('#98ccdd 1');
+
+  var resistance2Line = plot.line(resistance2Mapping);
+  resistance2Line.name('Resistance2');
+  resistance2Line.stroke('#69A3C3 1');
+
+  var resistance3Line = plot.line(resistance3Mapping);
+  resistance3Line.name('Resistance3');
+  resistance3Line.stroke('#1F72B2 1');
+        }
+
+
+        // plot.removeSeriesAt(1);
+        // plot.removeSeriesAt(1);
+        // plot.removeSeriesAt(1);
+        // plot.removeSeriesAt(1);
+        //
+        //
+
+
+
+
+      });
+    });
+
+
+    var densityCanvas = document.getElementById("densityChart");
+
+// Chart.defaults.global.defaultFontFamily = "Lato";
+// Chart.defaults.global.defaultFontSize = 18;
+var sentiment_data = {{sentiment_data | safe}}
+var pos = sentiment_data['positive'];
+var neg = sentiment_data['negative'];
+var neu = sentiment_data['neutral'];
+var densityData = {
+  label: 'News Sentiments',
+  backgroundColor: [
+    'rgba(75, 192, 192, 0.2)',
+      'rgba(255, 99, 132, 0.2)',
+
+      'rgba(255, 205, 86, 0.2)',
+
+    ],
+  borderColor: [
+    'rgba(75, 192, 192 )',
+      'rgba(255, 99, 132)',
+
+      'rgba(255, 205, 86)',
+
+  ],
+  borderWidth:1,
+  data: [pos, neg, neu],
+
+};
+
+
+var barChart = new Chart(densityCanvas, {
+  type: 'bar',
+  options: {
+    indexAxis: 'y',
+  },
+  data: {
+    labels: ["Positive","Negative","Neutral"],
+    datasets: [densityData],
+  },
+});
+  </script>
 
 
 </body>

@@ -14,25 +14,61 @@
             <th>Stock Symbol</th>
             <th>Stock Name</th>
             <th>Quantity</th>
-            <th>Date added</th>
+            <th>Stock Price</th>
+
+            <th>Sector Performance</th>
+            <th></th>
           </tr>
           {% for stock in stocks %}
           <tr>
             <td></td>
             <td>{{stock.stock_symbol}}</td>
             <td>{{stock.stock_name}}</td>
-            <td>{{stock.quantity}}</td>
-            <td>{{stock.date_added}}</td>
+            <td>
+              <a href="{{stock.stock_symbol}}/quantitySub" class="btn btn-sm btn-danger">-</a>
+              {{stock.quantity}}
+              <a href="{{stock.stock_symbol}}/quantityAdd"class="btn btn-sm btn-success">+</a>
+            </td>
+            <td>{{stock.stock_price}}</td>
+
+            <td>{{stock.stock_sector_performance}}</td>
+            <td><a href="{{stock.stock_symbol}}/remove" class = "btn btn-danger btn-sm">Delete</a></td>
 
           </tr>
           {% endfor %}
 
+
+
         </table>
+
 
       </div>
 
     </div>
 </div>
 </div>
+
+<!-- <script type="text/javascript">
+var deleteBtn = document.getElementById("delete-btn");
+
+
+deleteBtn[0].addEventListener("click",function(){
+  var stock_key = this.dataset.symbol;
+  console.log(stock_key);
+  $.ajax({
+    type: 'POST',
+    url: '',
+    data: {
+      'symbol': stock_key,
+    'csrfmiddlewaretoken': csrftoken
+  },
+    success: console.log('success'),
+    error: console.log('failure')
+  });
+
+})
+
+
+</script> -->
 
 {% endblock %}

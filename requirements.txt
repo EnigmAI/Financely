@@ -1,0 +1,58 @@
+arviz @ file:///home/conda/feedstock_root/build_artifacts/arviz_1618947141331/work
+asgiref==3.3.4
+certifi==2020.12.5
+cftime @ file:///D:/bld/cftime_1621553914127/work
+chardet==4.0.0
+click==8.0.1
+colorama==0.4.4
+convertdate @ file:///home/conda/feedstock_root/build_artifacts/convertdate_1615678826465/work
+cycler==0.10.0
+Cython @ file:///D:/bld/cython_1618445481531/work
+Django==3.2.3
+ephem @ file:///D:/bld/ephem_1602326724695/work
+filelock==3.0.12
+hijri-converter @ file:///home/conda/feedstock_root/build_artifacts/hijri-converter_1612531902526/work
+holidays @ file:///home/conda/feedstock_root/build_artifacts/holidays_1617373843485/work
+huggingface-hub==0.0.8
+idna==2.10
+joblib==1.0.1
+kiwisolver @ file:///D:/bld/kiwisolver_1610099948875/work
+korean-lunar-calendar @ file:///home/conda/feedstock_root/build_artifacts/korean_lunar_calendar_1589354365811/work
+LunarCalendar==0.0.9
+lxml==4.6.3
+matplotlib @ file:///D:/bld/matplotlib-suite_1620506206452/work
+multitasking==0.0.9
+netCDF4 @ file:///D:/bld/netcdf4_1618867945328/work
+numpy @ file:///D:/bld/numpy_1621506450533/work
+olefile @ file:///home/conda/feedstock_root/build_artifacts/olefile_1602866521163/work
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1612459636436/work
+pandas @ file:///D:/bld/pandas_1618263791034/work
+Pillow @ file:///D:/bld/pillow_1621288193589/work
+prophet @ file:///D:/bld/prophet_1618853394287/work
+PyMeeus @ file:///home/conda/feedstock_root/build_artifacts/pymeeus_1615809745702/work
+pyparsing==2.4.7
+PyQt5==5.12.3
+PyQt5-sip==4.19.18
+PyQtChart==5.12
+PyQtWebEngine==5.12.1
+pystan==2.19.1.1
+python-dateutil==2.8.1
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1612179539967/work
+regex==2021.4.4
+requests==2.25.1
+sacremoses==0.0.45
+scipy @ file:///C:/bld/scipy_1619562091939/work
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
+sqlparse==0.4.1
+tokenizers==0.10.3
+torch==1.8.1+cpu
+torchaudio==0.8.1
+torchvision==0.9.1+cpu
+tornado @ file:///D:/bld/tornado_1610094858390/work
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1621890532941/work
+transformers==4.6.1
+typing-extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1602702424206/work
+urllib3==1.26.5
+wincertstore==0.2
+xarray @ file:///home/conda/feedstock_root/build_artifacts/xarray_1621474818012/work
+yfinance==0.1.59

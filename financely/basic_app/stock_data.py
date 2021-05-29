@@ -1,6 +1,6 @@
 import yfinance as yf
 from datetime import datetime
-#import pandas as pd
+import pandas as pd
 
 
 def candlestick_data(ticker):
@@ -66,7 +66,21 @@ def get_data(ticker):
     data = aapl.info
     return data
 
+def get_name(ticker):
+    symbol = yf.Ticker(ticker)
+    data = symbol.info
+    print(data)
+    return(data['shortName'])
 
-#
+def get_price(ticker):
+    symbol = yf.Ticker(ticker)
+    # df  =symbol.history(interval='5m')
+    data = symbol.info
+    price  =  symbol.history(interval='5m').iloc[-1].Close
+    # print(df)
+    return([price, data['currency']])
+
+
+
 # for a in get_data("aapl"):
 #     print(a.shortName)
