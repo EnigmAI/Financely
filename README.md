@@ -1,7 +1,7 @@
 # Financely
 
 <center><img src="assets/logo.png" alt="logo" height="200px" width="270px"></center>
-Financely is an AI based financial adviser and user portfolio management system. The aim of this project is to help people become financially independent by demystifying trading and the stock market and making them more accesible to people without a formal education in the field.
+Financely is an AI based financial adviser and user portfolio management system. The aim of this project is to help people become financially independent by demystifying trading and the stock market and making them more accessible to people without a formal education in the field.
 
 # Setting up and running the project
 
